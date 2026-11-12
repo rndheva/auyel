@@ -1,0 +1,229 @@
+/* ============================================================
+   for auyel, from nava
+   Layout: one small "note card" at a time, centred on a
+   strawberry-milk ground; a mascot sits on top of each card.
+   ============================================================ */
+
+/* ---------- 1. tokens ---------- */
+:root {
+  --milk: #fbe9ee;        /* page ground */
+  --milk-deep: #f6d5df;   /* ground gradient edge */
+  --paper: #fffaf7;       /* card */
+  --cream: #fdf1dc;       /* mascot + inset panels */
+  --berry: #d9628a;       /* accent */
+  --berry-soft: #f3b3c6;
+  --cocoa: #6b4a45;       /* text + outlines */
+  --cocoa-soft: #a07f79;
+  --leaf: #8fbf8a;
+  --tear: #bfe0ee;
+
+  --display: "Fredoka", "Nunito", system-ui, sans-serif;
+  --body: "Nunito", system-ui, -apple-system, sans-serif;
+  --hand: "Gaegu", "Fredoka", cursive;
+
+  color-scheme: light;
+}
+
+/* ---------- 2. base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  display: flex;                       /* main uses margin:auto, so tall screens scroll instead of clipping */
+  padding: max(20px, env(safe-area-inset-top, 0px))
+           max(16px, env(safe-area-inset-right, 0px))
+           max(20px, env(safe-area-inset-bottom, 0px))
+           max(16px, env(safe-area-inset-left, 0px));
+  background: radial-gradient(120% 90% at 50% 0%, var(--milk) 0%, var(--milk) 55%, var(--milk-deep) 100%) fixed, var(--milk);
+  color: var(--cocoa);
+  font-family: var(--body);
+  font-size: 16px;                     /* 16px inputs stop iOS from zooming on focus */
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+main { position: relative; z-index: 1; width: 100%; max-width: 440px; margin: auto; }
+button, input[type="range"], .chip { touch-action: manipulation; }
+
+.vh {                                   /* visually hidden, still read by screen readers */
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ---------- 3. floating hearts ---------- */
+.sky { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.sky span {
+  position: absolute; color: var(--berry-soft); font-size: var(--s, 18px); opacity: .55;
+  animation: drift 7s ease-in-out infinite; animation-delay: var(--d, 0s);
+}
+
+/* ---------- 4. screen + card ---------- */
+.screen { display: flex; flex-direction: column; align-items: center; animation: pop .45s cubic-bezier(.2, .9, .3, 1.2); }
+
+.card {
+  width: 100%; margin: 0;
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 38px 22px 22px;
+  background: var(--paper);
+  border: 2.5px solid var(--cocoa); border-radius: 28px;
+  box-shadow: 0 6px 0 var(--berry-soft);
+}
+
+/* ---------- 5. type ---------- */
+h1, h2 { margin: 0; font-family: var(--display); font-weight: 600; text-align: center; text-wrap: balance; line-height: 1.2; outline: none; }
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.45rem; }
+.eyebrow { margin: 0; font-family: var(--display); font-weight: 500; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--berry); text-align: center; }
+.sub { display: block; margin: 0; text-align: center; color: var(--cocoa-soft); font-size: .95rem; }
+.hint { display: block; min-height: 1.3em; margin: -4px 0 0; text-align: center; font-size: .86rem; color: var(--berry); }
+.hint:empty { min-height: 0; margin: 0; }
+
+.note { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; background: var(--cream); border-radius: 18px; }
+.note p { margin: 0; }
+
+.dots { display: flex; gap: 6px; justify-content: center; margin: 0; }
+.dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--berry-soft); opacity: .5; }
+.dots i.on { background: var(--berry); opacity: 1; }
+
+/* ---------- 6. mascot ---------- */
+.mascot { --blush: .45; position: relative; z-index: 2; width: 150px; height: 150px; margin: 0 0 -26px; cursor: pointer; }
+.mascot svg { display: block; width: 100%; height: 100%; animation: bob 3.2s ease-in-out infinite; }
+.mascot.hop svg { animation: hop .5s ease-out; }
+.mascot .blush { opacity: var(--blush); transition: opacity .4s; }
+
+.m-fill  { fill: var(--cream); }
+.m-paper { fill: var(--paper); }
+.m-pink  { fill: var(--berry-soft); }
+.m-berry { fill: var(--berry); }
+.m-leaf  { fill: var(--leaf); }
+.m-ink   { fill: var(--cocoa); }
+.m-tear  { fill: var(--tear); stroke: var(--cocoa); stroke-width: 2.5; }
+.m-line  { stroke: var(--cocoa); stroke-width: 3.5; stroke-linejoin: round; }
+.m-stroke { fill: none; stroke: var(--cocoa); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.m-qmark { font-family: var(--display); font-weight: 600; font-size: 24px; fill: var(--berry); }
+
+/* which eyes / mouth / prop are drawn is decided by the figure's data attributes */
+.mascot [data-eyes], .mascot [data-mouth], .mascot [data-prop] { display: none; }
+.mascot[data-mood="normal"] [data-eyes="normal"],
+.mascot[data-mood="happy"]  [data-eyes="happy"],
+.mascot[data-mood="shock"]  [data-eyes="shock"],
+.mascot:not([data-mood="shock"]) [data-mouth="smile"],
+.mascot[data-mood="shock"]  [data-mouth="gasp"],
+.mascot[data-prop="heart"]  [data-prop="heart"],
+.mascot[data-prop="berry"]  [data-prop="berry"],
+.mascot[data-prop="q"]      [data-prop="q"],
+.mascot[data-prop="letter"] [data-prop="letter"] { display: inline; }
+
+/* ---------- 7. form controls ---------- */
+textarea, input[type="text"] {
+  width: 100%; padding: 12px 14px;
+  font: inherit; color: var(--cocoa);
+  background: var(--cream); border: 2px solid transparent; border-radius: 16px;
+  resize: vertical;
+}
+textarea { min-height: 104px; }
+textarea::placeholder, input::placeholder { color: var(--cocoa-soft); opacity: .8; }
+textarea:focus-visible, input[type="text"]:focus-visible { outline: none; border-color: var(--berry); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 0; padding: 0; border: 0; min-width: 0; }
+.chips legend { width: 100%; padding: 0 0 10px; }
+.chip { position: relative; cursor: pointer; }
+.chip input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.chip span {
+  display: block; padding: 9px 14px;
+  font-weight: 600; font-size: .9rem;
+  background: var(--cream); border-radius: 999px;
+  transition: transform .12s, background .15s;
+}
+.chip input:checked + span { background: var(--berry); color: var(--paper); transform: rotate(-1.5deg) scale(1.03); }
+.chip input:focus-visible + span { outline: 3px solid var(--berry); outline-offset: 3px; }
+
+.btn {
+  width: 100%; padding: 14px 18px;
+  font-family: var(--display); font-weight: 600; font-size: 1.05rem;
+  color: var(--paper); background: var(--berry);
+  border: 2.5px solid var(--cocoa); border-radius: 999px;
+  box-shadow: 0 4px 0 var(--cocoa);
+  cursor: pointer;
+  transition: transform .1s, box-shadow .1s, background .2s;
+}
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--cocoa); }
+.btn.ghost { background: var(--paper); color: var(--cocoa); }
+.btn.big { padding: 18px; font-size: 1.3rem; }
+.btn.wait { background: var(--berry-soft); color: var(--cocoa); }   /* answer not filled in yet */
+.btn.nope { animation: shake .4s; }
+
+.link {
+  align-self: center; padding: 8px;
+  font: inherit; font-size: .88rem; color: var(--cocoa-soft);
+  background: none; border: 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.btn:focus-visible, .link:focus-visible { outline: 3px solid var(--berry); outline-offset: 3px; }
+.row { display: flex; flex-direction: column; gap: 10px; }
+
+/* ---------- 8. percentage slider ---------- */
+.pct { display: block; font-family: var(--display); font-weight: 600; font-size: 3.2rem; line-height: 1; text-align: center; color: var(--berry); font-variant-numeric: tabular-nums; }
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 16px; margin: 10px 0;
+  border: 2px solid var(--cocoa); border-radius: 999px;
+  background: linear-gradient(to right, var(--berry) var(--fill, 70%), var(--cream) var(--fill, 70%));
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 36px; height: 36px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--cocoa); box-shadow: 0 2px 0 var(--cocoa); }
+input[type="range"]::-moz-range-thumb { width: 32px; height: 32px; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--cocoa); }
+input[type="range"]:focus-visible { outline: 3px solid var(--berry); outline-offset: 4px; }
+.ends { display: flex; justify-content: space-between; margin: 0; font-size: .8rem; color: var(--cocoa-soft); }
+.react { margin: 0; padding: 10px 14px; text-align: center; font-weight: 600; background: var(--cream); border-radius: 999px; }
+
+/* ---------- 9. letter ---------- */
+.letter {
+  margin: 0; padding: 18px 18px 14px;
+  font-family: var(--hand); font-size: 1.35rem; line-height: 1.35;
+  background-color: var(--cream);
+  background-image: repeating-linear-gradient(to bottom, transparent 0 34px, var(--berry-soft) 34px 35px);
+  background-position: 0 12px;
+  border-radius: 18px;
+}
+.letter p { margin: 0 0 .55em; }
+.letter .sign { font-weight: 700; color: var(--berry); }
+.copybox { min-height: 150px; font-size: .85rem; }
+
+/* ---------- 10. "NO" dialog ---------- */
+dialog {
+  width: calc(100% - 32px); max-width: 380px; padding: 0;
+  background: transparent; border: 0; color: inherit; overflow: visible;
+}
+dialog[open] { display: flex; flex-direction: column; align-items: center; animation: shake .5s; }
+dialog::backdrop { background: rgb(107 74 69 / .45); }
+.shout { margin: 0; font-family: var(--display); font-weight: 600; font-size: 1.6rem; line-height: 1.15; text-align: center; }
+.mono { margin: 0; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .85rem; text-align: center; color: var(--cocoa-soft); }
+
+/* ---------- 11. hearts that fly out ---------- */
+.burst { position: fixed; left: 50%; top: 45%; z-index: 30; pointer-events: none; color: var(--berry); font-size: var(--s); animation: fly 1.5s ease-out forwards; }
+
+/* ---------- 12. motion ---------- */
+@keyframes drift { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-10px) rotate(var(--r, 0deg)); } }
+@keyframes pop   { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes bob   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes hop   { 0%, 100% { transform: none; } 35% { transform: translateY(-18px) scale(1.06, .95); } 70% { transform: translateY(0) scale(.97, 1.04); } }
+@keyframes shake { 0%, 100% { transform: none; } 20% { transform: translateX(-8px) rotate(-1deg); } 40% { transform: translateX(8px) rotate(1deg); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+@keyframes fly   { to { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ---------- 13. small phones ---------- */
+@media (max-width: 380px) {
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.25rem; }
+  .mascot { width: 126px; height: 126px; margin-bottom: -22px; }
+  .card { padding: 32px 16px 18px; border-radius: 24px; }
+  .pct { font-size: 2.7rem; }
+  .letter { font-size: 1.22rem; }
+}

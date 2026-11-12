@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fbe9ee">
+  <meta name="description" content="a tiny little thing nava made for auyel">
+  <title>For Auyel, from Nava</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Gaegu:wght@400;700&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+
+  <!-- decorative floating hearts -->
+  <div class="sky" aria-hidden="true">
+    <span style="left:6%;top:9%;--s:22px;--r:-14deg">♡</span>
+    <span style="left:84%;top:6%;--s:16px;--r:12deg;--d:1.2s">♡</span>
+    <span style="left:90%;top:38%;--s:26px;--r:18deg;--d:2.1s">♡</span>
+    <span style="left:3%;top:52%;--s:15px;--r:8deg;--d:.6s">♡</span>
+    <span style="left:12%;top:86%;--s:24px;--r:-10deg;--d:3s">♡</span>
+    <span style="left:78%;top:88%;--s:18px;--r:-6deg;--d:1.8s">♡</span>
+    <span style="left:48%;top:3%;--s:13px;--d:2.6s">♡</span>
+  </div>
+
+  <main id="app">
+
+    <!-- 1. WELCOME -->
+    <section class="screen" id="welcome" aria-labelledby="welcome-title">
+      <figure class="mascot" data-prop="heart" data-mood="normal" data-blush="0.4"></figure>
+      <article class="card">
+        <p class="eyebrow">a little surprise for auyel</p>
+        <h1 id="welcome-title" tabindex="-1">hai auyel!</h1>
+        <h2>this is me, nava :3</h2>
+        <p class="sub">i made a tiny little thing just for you ♡</p>
+        <div class="note">
+          <p>aku bikin ini karena kamu shy shy kalau ditanya langsung HAHAHA.</p>
+          <p>so, i thought maybe this would be a little easier. there are just a few things i've been curious about. answer honestly, okidoki??</p>
+          <p><strong>don't overthink it! just answer yaa cantik :p</strong></p>
+        </div>
+        <button class="btn" type="button" data-go="q1">tap here to begin ♡</button>
+      </article>
+    </section>
+
+    <!-- 2. QUESTION 01 -->
+    <section class="screen" id="q1" aria-labelledby="q1-title" hidden>
+      <figure class="mascot" data-prop="q" data-mood="normal" data-blush="0.5"></figure>
+      <form class="card" data-next="q2" data-require="q1" data-msg="tulis dikit dulu dong :p" novalidate>
+        <p class="dots"><span class="vh">question 1 of 4</span><i class="on"></i><i></i><i></i><i></i></p>
+        <p class="eyebrow">first impression</p>
+        <h2 id="q1-title" tabindex="-1">so, what was your first impression of nava?</h2>
+        <p class="sub" id="q1-help">what did you think when you first met or got to know him?</p>
+        <textarea id="q1-input" name="q1" aria-labelledby="q1-title" aria-describedby="q1-help" placeholder="jujur aja, nava kuat kok..."></textarea>
+        <p class="hint" role="status"></p>
+        <button class="btn" type="submit">next ♡</button>
+        <button class="link" type="button" data-go="welcome">← go back</button>
+      </form>
+    </section>
+
+    <!-- 3. QUESTION 02 -->
+    <section class="screen" id="q2" aria-labelledby="q2-title" hidden>
+      <figure class="mascot" data-prop="berry" data-mood="normal" data-blush="0.6"></figure>
+      <form class="card" data-next="q3" data-require="food" data-msg="satu makanan aja, apa pun boleh :p" novalidate>
+        <p class="dots"><span class="vh">question 2 of 4</span><i class="on"></i><i class="on"></i><i></i><i></i></p>
+        <p class="eyebrow">nava as a food?!</p>
+        <h2 id="q2-title" tabindex="-1">if nava were a food, what would he be?</h2>
+        <input type="text" id="food-input" name="food" aria-labelledby="q2-title" placeholder="e.g. strawberry mochi" autocomplete="off">
+        <output class="hint" id="food-echo" for="food-input"></output>
+        <label class="sub" for="why-input">and most importantly, why does that food remind you of him?</label>
+        <textarea id="why-input" name="why" placeholder="because..."></textarea>
+        <p class="hint" role="status"></p>
+        <button class="btn" type="submit">next ♡</button>
+        <button class="link" type="button" data-go="q1">← go back</button>
+      </form>
+    </section>
+
+    <!-- 4. QUESTION 03 -->
+    <section class="screen" id="q3" aria-labelledby="q3-title" hidden>
+      <figure class="mascot" data-prop="heart" data-mood="normal" data-blush="0.5"></figure>
+      <form class="card" data-next="q4" data-require="picks" data-msg="pilih minimal satu ya :p" novalidate>
+        <p class="dots"><span class="vh">question 3 of 4</span><i class="on"></i><i class="on"></i><i class="on"></i><i></i></p>
+        <p class="eyebrow">what caught your attention?</p>
+        <h2 id="q3-title" tabindex="-1">what's the thing about nava that made you interested in him?</h2>
+        <fieldset class="chips">
+          <legend class="sub">pick as many as you like</legend>
+          <label class="chip"><input type="checkbox" name="picks" value="his personality"><span>his personality</span></label>
+          <label class="chip"><input type="checkbox" name="picks" value="the way he talks"><span>the way he talks</span></label>
+          <label class="chip"><input type="checkbox" name="picks" value="his humor / silly jokes"><span>his humor / silly jokes</span></label>
+          <label class="chip"><input type="checkbox" name="picks" value="the way he treats me"><span>the way he treats me</span></label>
+          <label class="chip"><input type="checkbox" name="picks" value="his attention and little efforts"><span>his attention and little efforts</span></label>
+          <label class="chip"><input type="checkbox" name="picks" value="his appearance (hehe)"><span>his appearance (hehe)</span></label>
+          <label class="chip"><input type="checkbox" name="picks" value="the way he makes me feel"><span>the way he makes me feel</span></label>
+          <label class="chip"><input type="checkbox" name="picks" value="something else..."><span>something else...</span></label>
+        </fieldset>
+        <label class="vh" for="more-input">wanna explain a little? (optional)</label>
+        <textarea id="more-input" name="more" placeholder="wanna explain a little? (optional)"></textarea>
+        <p class="hint" role="status"></p>
+        <button class="btn" type="submit">next ♡</button>
+        <button class="link" type="button" data-go="q2">← go back</button>
+      </form>
+    </section>
+
+    <!-- 5. QUESTION 04 -->
+    <section class="screen" id="q4" aria-labelledby="q4-title" hidden>
+      <figure class="mascot" data-prop="q" data-mood="happy" data-blush="0.75"></figure>
+      <form class="card" data-next="final" novalidate>
+        <p class="dots"><span class="vh">question 4 of 4</span><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></p>
+        <p class="eyebrow">the moment</p>
+        <h2 id="q4-title" tabindex="-1">was there a moment when you started thinking that you might actually like nava?</h2>
+        <p class="sub" id="q4-help">maybe something he said, something he did, or just a random little moment. i'd love to know :3</p>
+        <textarea id="q4-input" name="q4" aria-labelledby="q4-title" aria-describedby="q4-help" placeholder="optional, tapi nava penasaran banget..."></textarea>
+        <p class="hint" role="status"></p>
+        <button class="btn" type="submit">next ♡</button>
+        <button class="link" type="button" data-go="q3">← go back</button>
+      </form>
+    </section>
+
+    <!-- 6. THE FINAL QUESTION -->
+    <section class="screen" id="final" aria-labelledby="final-title" hidden>
+      <figure class="mascot" data-prop="heart" data-mood="normal" data-blush="0.85"></figure>
+      <article class="card">
+        <p class="eyebrow">♡ the final question ♡</p>
+        <p class="sub">okay, one last thing...</p>
+        <h1 id="final-title" tabindex="-1">do you like nava?</h1>
+        <p class="sub">there's no hiding now, auyel... :p</p>
+        <div class="row">
+          <button class="btn big" type="button" data-action="yes">YES!! ♡</button>
+          <button class="btn ghost" type="button" data-action="no">NO...</button>
+        </div>
+        <button class="link" type="button" data-go="q4">← go back</button>
+      </article>
+    </section>
+
+    <!-- 7. THE PERCENTAGE (only after YES) -->
+    <section class="screen" id="pct" aria-labelledby="pct-title" hidden>
+      <figure class="mascot" data-prop="heart" data-mood="happy" data-blush="0.7"></figure>
+      <form class="card" data-next="letter" novalidate>
+        <h1 id="pct-title" tabindex="-1">WAIT WAIT WAIT!!</h1>
+        <h2><label for="pct-input">how much do you like nava?</label></h2>
+        <p class="sub">be honest... there's a percentage involved :3</p>
+        <output class="pct" id="pct-value" for="pct-input">70% ♡</output>
+        <input type="range" id="pct-input" name="pct" min="0" max="100" step="1" value="70">
+        <p class="ends" aria-hidden="true"><span>just a little</span><span>SO MUCH!!</span></p>
+        <p class="react" id="pct-react" role="status">awww, nava is smiling rn ♡</p>
+        <button class="btn" type="submit">that's my answer ♡</button>
+      </form>
+    </section>
+
+    <!-- 8. THE FINAL LETTER -->
+    <section class="screen" id="letter" aria-labelledby="letter-title" hidden>
+      <figure class="mascot" data-prop="letter" data-mood="happy" data-blush="1"></figure>
+      <article class="card">
+        <h1 id="letter-title" tabindex="-1">thank you, auyel! ♡</h1>
+        <p class="sub" data-when="yes">you made someone very happy today.</p>
+        <p class="sub" data-when="no" hidden>you made it to the end, and that already means a lot.</p>
+
+        <blockquote class="letter" data-when="yes">
+          <p>thank you for liking nava. honestly, i'm really happy to know that you do.</p>
+          <p>i'll do my best to make you feel appreciated, comfortable, and happy whenever we're together.</p>
+          <p>and hopefully, i'll keep giving you little reasons to fall in love with me a little more every day.</p>
+          <p>no rush, no pressure. let's make our own little story, one moment at a time.</p>
+          <footer class="sign">with love, nava :3</footer>
+        </blockquote>
+        <blockquote class="letter" data-when="no" hidden>
+          <p>thank you for being honest with me, auyel. that matters more than the answer.</p>
+          <p>i'm still really glad i got to know you, and i loved reading everything you wrote here.</p>
+          <p>no rush, no pressure. nava's still nava, and you're still you.</p>
+          <footer class="sign">with love, nava :3</footer>
+        </blockquote>
+
+        <p class="sub">last step: nava can't see your answers until you send them to him.</p>
+        <button class="btn" type="button" data-action="copy">copy my answers for nava ♡</button>
+        <p class="hint" id="copy-status" role="status"></p>
+        <textarea class="copybox" id="summary" aria-label="your answers" readonly hidden></textarea>
+        <button class="link" type="button" data-action="restart">start over</button>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- popup when she taps NO -->
+  <dialog id="no-dialog" aria-labelledby="no-title">
+    <figure class="mascot" data-prop="none" data-mood="shock" data-blush="0.2"></figure>
+    <article class="card">
+      <p class="shout" id="no-title">EXCUSE ME??? 😭</p>
+      <p class="shout">GABOLEHHH!!!</p>
+      <p class="mono">wait... nava.exe has stopped working.</p>
+      <p class="sub">okay, kidding. you can be honest, auyel. ♡</p>
+      <button class="btn" type="button" data-action="no-continue">okay, continue :p</button>
+      <button class="link" type="button" data-action="no-back">eh, salah pencet! take me back</button>
+    </article>
+  </dialog>
+
+  <!-- the mascot, drawn once and cloned into every <figure class="mascot"> by app.js.
+       data-mood / data-prop on the figure decide which eyes and prop are visible (see style.css). -->
+  <template id="mascot-template">
+    <svg viewBox="0 0 200 200" role="img" aria-label="a little cream bunny">
+      <g class="m-fill m-line">
+        <ellipse cx="76" cy="50" rx="15" ry="38" transform="rotate(-9 76 50)"/>
+        <ellipse cx="124" cy="50" rx="15" ry="38" transform="rotate(9 124 50)"/>
+      </g>
+      <ellipse class="m-pink" cx="76" cy="52" rx="6" ry="24" transform="rotate(-9 76 52)"/>
+      <ellipse class="m-pink" cx="124" cy="52" rx="6" ry="24" transform="rotate(9 124 52)"/>
+      <ellipse class="m-fill m-line" cx="100" cy="128" rx="64" ry="54"/>
+      <g class="blush m-berry">
+        <ellipse cx="62" cy="134" rx="12" ry="7"/>
+        <ellipse cx="138" cy="134" rx="12" ry="7"/>
+      </g>
+
+      <g data-eyes="normal" class="m-ink"><circle cx="80" cy="118" r="5.5"/><circle cx="120" cy="118" r="5.5"/></g>
+      <path data-eyes="happy" class="m-stroke" d="M72 120q8-9 16 0M112 120q8-9 16 0"/>
+      <g data-eyes="shock">
+        <path class="m-stroke" d="M72 112l10 6-10 6M128 112l-10 6 10 6"/>
+        <path class="m-tear" d="M150 92c5 8 6 13 0 15-6-2-5-7 0-15z"/>
+      </g>
+      <path data-mouth="smile" class="m-stroke" d="M93 129q7 7 14 0"/>
+      <ellipse data-mouth="gasp" class="m-ink" cx="100" cy="134" rx="5" ry="6"/>
+
+      <path data-prop="heart" class="m-berry m-line" transform="translate(100 158) scale(1.15)" d="M0-6C-10-20-28-6 0 16 28-6 10-20 0-6z"/>
+      <g data-prop="berry" transform="translate(100 156)">
+        <path class="m-berry m-line" d="M-14-6Q0-16 14-6Q15 10 0 20Q-15 10-14-6z"/>
+        <path class="m-leaf m-line" d="M-9-9l9-7 9 7-9 3z"/>
+        <circle class="m-fill" cx="-5" cy="2" r="1.4"/><circle class="m-fill" cx="5" cy="4" r="1.4"/><circle class="m-fill" cx="0" cy="11" r="1.4"/>
+      </g>
+      <g data-prop="q" transform="translate(158 62)">
+        <circle class="m-paper m-line" r="20"/>
+        <path class="m-paper m-line" d="M-12 16l-8 10 14-5z"/>
+        <text class="m-qmark" y="8" text-anchor="middle">?</text>
+      </g>
+      <g data-prop="letter" transform="translate(100 160)">
+        <rect class="m-paper m-line" x="-24" y="-15" width="48" height="32" rx="5"/>
+        <path class="m-stroke" d="M-24-12L0 5 24-12"/>
+        <path class="m-berry" transform="translate(0 6) scale(.45)" d="M0-6C-10-20-28-6 0 16 28-6 10-20 0-6z"/>
+      </g>
+
+      <g class="m-fill m-line"><ellipse cx="74" cy="162" rx="11" ry="8"/><ellipse cx="126" cy="162" rx="11" ry="8"/></g>
+    </svg>
+  </template>
+
+  <noscript><p class="sub">this little page needs JavaScript turned on to work :(</p></noscript>
+</body>
+</html>
