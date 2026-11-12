@@ -1,36 +1,31 @@
-/* for auyel, from nava — all the behaviour.
-   The HTML holds every screen as a <section>; this file only decides which one is
-   visible, keeps her answers, and makes things react. */
 (() => {
   "use strict";
 
   const STORAGE_KEY = "auyel-answers-draft";
-  const STEPS = ["welcome", "q1", "q2", "q3", "q4", "final", "pct", "letter"];
+  const STEPS = ["welcome", "q1", "q2", "q3", "q4", "final", "pct", "letter", "dance"];
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-  /* ---------- state ---------- */
-  const blank = () => ({ step: "welcome", q1: "", food: "", why: "", picks: [], more: "", q4: "", like: null, pct: 70 });
+  const blank = () => ({ step: "welcome", q1: "", food: "", why: "", picks: [], more: "", q4: "", like: null, pct: 70, copied: false });
   let state = blank();
 
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
     if (saved && typeof saved === "object") state = { ...state, ...saved };
-  } catch { /* private mode etc. — just start fresh */ }
+  } catch { }
   if (!Array.isArray(state.picks)) state.picks = [];
 
-  const save = () => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* ignore */ } };
+  const save = () => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { } };
 
-  /* ---------- little effects ---------- */
   const calm = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const buzz = () => { try { navigator.vibrate?.(12); } catch { /* ignore */ } };
+  const buzz = () => { try { navigator.vibrate?.(12); } catch { } };
 
-  function heart({ left, top, x, y, size }) {
+  function heart({ left, top, x, y, size, char = "♡" }) {
     const h = document.createElement("span");
     h.className = "burst";
     h.setAttribute("aria-hidden", "true");
-    h.textContent = "♡";
+    h.textContent = char;
     if (left != null) { h.style.left = left + "px"; h.style.top = top + "px"; }
     h.style.setProperty("--x", x + "px");
     h.style.setProperty("--y", y + "px");
@@ -39,55 +34,151 @@
     document.body.append(h);
     setTimeout(() => h.remove(), 1600);
   }
-  /* one heart floating up from a mascot */
+
   function puff(mascot) {
     if (calm() || !mascot) return;
     const r = mascot.getBoundingClientRect();
-    heart({ left: r.left + r.width / 2 - 8, top: r.top + 16, x: Math.random() * 70 - 35, y: -90, size: 22 });
+    const chars = ["♡", "♥", "✦", "✧"];
+    heart({ left: r.left + r.width / 2 - 8, top: r.top + 16, x: Math.random() * 70 - 35, y: -90, size: 22, char: chars[Math.floor(Math.random() * chars.length)] });
   }
-  /* lots of hearts from the middle of the screen (after YES) */
+
   function burst() {
     if (calm()) return;
     for (let i = 0; i < 26; i++) {
       const a = Math.random() * Math.PI * 2, d = 120 + Math.random() * 220;
-      heart({ x: Math.cos(a) * d, y: Math.sin(a) * d, size: 16 + Math.random() * 26 });
+      heart({ x: Math.cos(a) * d, y: Math.sin(a) * d, size: 16 + Math.random() * 26, char: i % 5 === 0 ? "✦" : i % 2 ? "♥" : "♡" });
     }
   }
   function replay(node, cls) { node.classList.remove(cls); void node.offsetWidth; node.classList.add(cls); }
 
-  /* ---------- mascots: clone the <template> into every figure ---------- */
   const mascotTemplate = $("#mascot-template");
   $$(".mascot").forEach((fig) => {
-    fig.append(mascotTemplate.content.cloneNode(true));
+    fig.prepend(mascotTemplate.content.cloneNode(true));
     fig.style.setProperty("--blush", fig.dataset.blush || ".45");
     fig.addEventListener("click", () => { replay(fig, "hop"); puff(fig); buzz(); });
   });
   const mascotOf = (node) => $(".mascot", node.closest(".screen") || document);
   const setBlush = (mascot, v) => mascot?.style.setProperty("--blush", Math.max(.2, Math.min(1, v)));
 
-  /* ---------- navigation ---------- */
+  const TRACK_ID = "3iBgrkexCzVuPy4O9vx7Mf";
+  const dock = $("#dock"), eq = $("#eq"), playBtn = $("#dock-play"), dockToggle = $("#dock-toggle");
+  let spotify = null, dockStarted = false, everPlayed = false, loopPending = false;
+
+  function setDockOpen(open) {
+    dock.classList.toggle("collapsed", !open);
+    document.body.classList.toggle("dock-open", open);
+    dockToggle.setAttribute("aria-expanded", String(open));
+  }
+  function paintPlaying(playing) {
+    eq.classList.toggle("on", playing);
+    playBtn.textContent = playing ? "❚❚" : "▶";
+    playBtn.setAttribute("aria-label", playing ? "pause" : "play");
+    if (playing && !everPlayed) {
+      everPlayed = true;
+      $("#dock-hint").hidden = true;
+      setTimeout(() => setDockOpen(false), 1800);
+    }
+  }
+  function plainEmbed() {
+    const slot = $("#spotify-embed");
+    if (!slot) return;
+    const frame = document.createElement("iframe");
+    frame.src = `https://open.spotify.com/embed/track/${TRACK_ID}`;
+    frame.title = "Glue Song by beabadoobee on Spotify";
+    frame.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
+    slot.replaceWith(frame);
+    playBtn.hidden = true;
+  }
+  function onPlayback(e) {
+    const d = e.data || {};
+    paintPlaying(d.isPaused === false);
+    if (d.duration > 0 && d.position >= d.duration - 700 && !loopPending) {
+      loopPending = true;
+      setTimeout(() => { loopPending = false; spotify?.restart?.(); }, 1200);
+    }
+  }
+  function introduceMusic() {
+    if (dockStarted) return;
+    dockStarted = true;
+    dock.hidden = false;
+    document.body.classList.add("has-dock");
+    setDockOpen(true);
+
+    const fallback = setTimeout(plainEmbed, 6000);
+    window.onSpotifyIframeApiReady = (api) => {
+      const slot = $("#spotify-embed");
+      if (!slot) return;
+      clearTimeout(fallback);
+      api.createController(slot, { uri: `spotify:track:${TRACK_ID}`, width: "100%", height: 80 }, (controller) => {
+        spotify = controller;
+        controller.addListener("playback_update", onPlayback);
+      });
+    };
+    const script = document.createElement("script");
+    script.src = "https://open.spotify.com/embed/iframe-api/v1";
+    script.async = true;
+    script.onerror = () => { clearTimeout(fallback); plainEmbed(); };
+    document.head.append(script);
+  }
+  playBtn.addEventListener("click", () => {
+    if (spotify) spotify.togglePlay();
+    else setDockOpen(true);
+  });
+  dockToggle.addEventListener("click", () => setDockOpen(dock.classList.contains("collapsed")));
+
+  let rainTimer = null;
+  function rain(on, every = 320) {
+    clearInterval(rainTimer);
+    rainTimer = null;
+    if (!on || calm()) return;
+    rainTimer = setInterval(() => {
+      const h = document.createElement("span");
+      h.className = "rain";
+      h.setAttribute("aria-hidden", "true");
+      h.textContent = Math.random() < .5 ? "♡" : "♥";
+      h.style.left = Math.random() * 96 + "vw";
+      h.style.setProperty("--s", (14 + Math.random() * 22) + "px");
+      h.style.setProperty("--t", (3.5 + Math.random() * 3) + "s");
+      h.style.setProperty("--r", (Math.random() * 240 - 120) + "deg");
+      document.body.append(h);
+      setTimeout(() => h.remove(), 7000);
+    }, every);
+  }
+
   const screens = $$(".screen");
 
+  let navToken = 0;
   function show(step, moveFocus = true) {
     if (!STEPS.includes(step)) step = "welcome";
     if (step === "pct" && state.like !== true) step = "final";
     if (step === "letter" && state.like === null) step = "final";
+    if (step === "dance" && state.like !== true) step = state.like === null ? "final" : "letter";
     state.step = step;
     save();
 
-    screens.forEach((s) => { s.hidden = s.id !== step; });
-    const current = $("#" + step);
-    if (step === "letter") prepareLetter();
-    const form = $("form", current);
-    if (form) refreshButton(form);
+    const current = screens.find((s) => !s.hidden);
+    const next = $("#" + step);
+    const token = ++navToken;
 
-    if (moveFocus) {
-      $("[tabindex='-1']", current)?.focus({ preventScroll: true });
-      window.scrollTo(0, 0);
-    }
+    const swap = () => {
+      if (token !== navToken) return;
+      if (step === "letter") prepareLetter();
+      if (step === "final") $("#final .mascot").dataset.mood = "normal";
+      screens.forEach((s) => { s.hidden = s !== next; s.classList.remove("leaving"); });
+      rain(step === "dance" || (step === "letter" && state.like === true), step === "dance" ? 320 : 900);
+      const form = $("form", next);
+      if (form) refreshButton(form);
+      if (moveFocus) {
+        $("[tabindex='-1']", next)?.focus({ preventScroll: true });
+        window.scrollTo(0, 0);
+      }
+    };
+
+    if (!moveFocus || calm() || !current || current === next) { swap(); return; }
+    current.classList.add("leaving");
+    setTimeout(swap, 220);
   }
 
-  /* ---------- validation: forms say what they need via data-require / data-msg ---------- */
   function problem(form) {
     const need = form.dataset.require;
     if (!need) return "";
@@ -98,7 +189,6 @@
     $("button[type='submit']", form)?.classList.toggle("wait", problem(form) !== "");
   }
 
-  /* ---------- copy that reacts ---------- */
   const foodEcho = (v) => { v = (v || "").trim(); return v ? `nava = ${v}?! 😭 okay, explain...` : ""; };
   function reaction(p) {
     if (p >= 100) return "NAVA.EXE HAS MELTED ♡♡♡";
@@ -114,9 +204,11 @@
     $("#pct-value").textContent = state.pct + "% ♡";
     $("#pct-react").textContent = reaction(state.pct);
     setBlush(mascotOf(input), state.pct / 100);
+    const meter = $("#meter");
+    meter.style.setProperty("--p", state.pct);
+    meter.style.setProperty("--beat", (1.3 - state.pct * 0.009).toFixed(2) + "s");
   }
 
-  /* ---------- the letter screen ---------- */
   function summary() {
     const s = state, t = (v) => String(v || "").trim();
     return [
@@ -138,18 +230,24 @@
     box.value = summary();
     box.hidden = true;
     $("#copy-status").textContent = "";
+    $("#continue-btn").hidden = !(state.like && state.copied);
   }
   function copyAnswers() {
     const box = $("#summary"), status = $("#copy-status");
-    const done = () => { status.textContent = "copied! now paste it in your chat with nava :3"; };
+    const unlock = () => {
+      state.copied = true; save();
+      const next = $("#continue-btn");
+      if (state.like && next.hidden) { next.hidden = false; puff(mascotOf(next)); }
+    };
+    const done = () => { status.textContent = "copied! now paste it in your chat with nava :3"; unlock(); };
     const manual = () => {
       box.hidden = false; box.focus(); box.select();
       status.textContent = "select all of this, copy it, and send it to nava :3";
+      unlock();
     };
     try { navigator.clipboard.writeText(box.value).then(done, manual); } catch { manual(); }
   }
 
-  /* ---------- put saved answers back into the fields ---------- */
   function fillFields() {
     for (const name of ["q1", "food", "why", "more", "q4"]) {
       const field = $(`[name="${name}"]`);
@@ -160,7 +258,6 @@
     paintPct();
   }
 
-  /* ---------- events ---------- */
   document.addEventListener("input", (e) => {
     const t = e.target;
     if (!t.name) return;
@@ -174,6 +271,7 @@
     } else if (t.name === "pct") {
       state.pct = Number(t.value);
       paintPct();
+      replay($("#pct-value"), "tick");
       if (state.pct % 10 === 0) puff(mascot);
     } else {
       state[t.name] = t.value;
@@ -200,7 +298,16 @@
 
   const dialog = $("#no-dialog");
   const actions = {
-    yes() { state.like = true; buzz(); burst(); show("pct"); },
+    yes() {
+      state.like = true;
+      const m = $("#final .mascot");
+      m.dataset.mood = "happy";
+      setBlush(m, 1);
+      replay(m, "hop");
+      buzz();
+      burst();
+      setTimeout(() => show("pct"), calm() ? 0 : 700);
+    },
     no() { dialog.showModal(); },
     "no-continue"() { dialog.close(); state.like = false; show("letter"); },
     "no-back"() { dialog.close(); },
@@ -210,11 +317,14 @@
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
-    if (btn.dataset.go) show(btn.dataset.go);
+    if (btn.dataset.go) {
+      if (btn.dataset.go === "q1") introduceMusic();
+      show(btn.dataset.go);
+    }
     else if (actions[btn.dataset.action]) actions[btn.dataset.action]();
   });
 
-  /* ---------- start ---------- */
   fillFields();
   show(state.step, false);
+  if (state.step !== "welcome") introduceMusic();
 })();

@@ -10,24 +10,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Gaegu:wght@400;700&family=Nunito:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="style.css">
-  <script src="app.js" defer></script>
+  <script src="App.js" defer></script>
 </head>
 <body>
 
-  <!-- decorative floating hearts -->
   <div class="sky" aria-hidden="true">
-    <span style="left:6%;top:9%;--s:22px;--r:-14deg">♡</span>
-    <span style="left:84%;top:6%;--s:16px;--r:12deg;--d:1.2s">♡</span>
-    <span style="left:90%;top:38%;--s:26px;--r:18deg;--d:2.1s">♡</span>
-    <span style="left:3%;top:52%;--s:15px;--r:8deg;--d:.6s">♡</span>
-    <span style="left:12%;top:86%;--s:24px;--r:-10deg;--d:3s">♡</span>
-    <span style="left:78%;top:88%;--s:18px;--r:-6deg;--d:1.8s">♡</span>
-    <span style="left:48%;top:3%;--s:13px;--d:2.6s">♡</span>
+    <span style="left:6%;top:9%;--s:22px;--r:-14deg;--t:7s">♡</span>
+    <span style="left:84%;top:6%;--s:16px;--r:12deg;--d:1.2s;--t:5s">✦</span>
+    <span style="left:90%;top:38%;--s:26px;--r:18deg;--d:2.1s;--t:9s">♥</span>
+    <span style="left:3%;top:52%;--s:20px;--r:8deg;--d:.6s;--t:11s">✿</span>
+    <span style="left:12%;top:86%;--s:24px;--r:-10deg;--d:3s;--t:8s">♡</span>
+    <span style="left:78%;top:88%;--s:18px;--r:-6deg;--d:1.8s;--t:6s">✧</span>
+    <span style="left:48%;top:3%;--s:13px;--d:2.6s;--t:4.5s">✦</span>
+    <span style="left:93%;top:66%;--s:17px;--d:1s;--t:10s">✿</span>
+    <span style="left:22%;top:30%;--s:12px;--d:2s;--t:6.5s">♥</span>
   </div>
+
 
   <main id="app">
 
-    <!-- 1. WELCOME -->
     <section class="screen" id="welcome" aria-labelledby="welcome-title">
       <figure class="mascot" data-prop="heart" data-mood="normal" data-blush="0.4"></figure>
       <article class="card">
@@ -36,15 +37,14 @@
         <h2>this is me, nava :3</h2>
         <p class="sub">i made a tiny little thing just for you ♡</p>
         <div class="note">
-          <p>aku bikin ini karena kamu shy shy kalau ditanya langsung HAHAHA.</p>
-          <p>so, i thought maybe this would be a little easier. there are just a few things i've been curious about. answer honestly, okidoki??</p>
-          <p><strong>don't overthink it! just answer yaa cantik :p</strong></p>
+          <p>aku bikin ini karena katanya kamu agak malu kalau ditanya-tanya secara langsung hehe.</p>
+          <p>so, i thought maybe this would be a little easier. there are just a few things i've been curious about. answer honestly, okay?</p>
+          <p><strong>don't overthink it! just be yourself :p</strong></p>
         </div>
         <button class="btn" type="button" data-go="q1">tap here to begin ♡</button>
       </article>
     </section>
 
-    <!-- 2. QUESTION 01 -->
     <section class="screen" id="q1" aria-labelledby="q1-title" hidden>
       <figure class="mascot" data-prop="q" data-mood="normal" data-blush="0.5"></figure>
       <form class="card" data-next="q2" data-require="q1" data-msg="tulis dikit dulu dong :p" novalidate>
@@ -59,7 +59,6 @@
       </form>
     </section>
 
-    <!-- 3. QUESTION 02 -->
     <section class="screen" id="q2" aria-labelledby="q2-title" hidden>
       <figure class="mascot" data-prop="berry" data-mood="normal" data-blush="0.6"></figure>
       <form class="card" data-next="q3" data-require="food" data-msg="satu makanan aja, apa pun boleh :p" novalidate>
@@ -76,7 +75,6 @@
       </form>
     </section>
 
-    <!-- 4. QUESTION 03 -->
     <section class="screen" id="q3" aria-labelledby="q3-title" hidden>
       <figure class="mascot" data-prop="heart" data-mood="normal" data-blush="0.5"></figure>
       <form class="card" data-next="q4" data-require="picks" data-msg="pilih minimal satu ya :p" novalidate>
@@ -102,7 +100,6 @@
       </form>
     </section>
 
-    <!-- 5. QUESTION 04 -->
     <section class="screen" id="q4" aria-labelledby="q4-title" hidden>
       <figure class="mascot" data-prop="q" data-mood="happy" data-blush="0.75"></figure>
       <form class="card" data-next="final" novalidate>
@@ -117,7 +114,6 @@
       </form>
     </section>
 
-    <!-- 6. THE FINAL QUESTION -->
     <section class="screen" id="final" aria-labelledby="final-title" hidden>
       <figure class="mascot" data-prop="heart" data-mood="normal" data-blush="0.85"></figure>
       <article class="card">
@@ -133,13 +129,20 @@
       </article>
     </section>
 
-    <!-- 7. THE PERCENTAGE (only after YES) -->
     <section class="screen" id="pct" aria-labelledby="pct-title" hidden>
       <figure class="mascot" data-prop="heart" data-mood="happy" data-blush="0.7"></figure>
       <form class="card" data-next="letter" novalidate>
         <h1 id="pct-title" tabindex="-1">WAIT WAIT WAIT!!</h1>
         <h2><label for="pct-input">how much do you like nava?</label></h2>
         <p class="sub">be honest... there's a percentage involved :3</p>
+        <svg class="meter" id="meter" viewBox="0 0 100 92" aria-hidden="true">
+          <defs><clipPath id="meter-clip"><path d="M50 88C14 62 4 44 4 28 4 14 15 4 27 4c9 0 18 5 23 14C55 9 64 4 73 4c12 0 23 10 23 24 0 16-10 34-46 60z"/></clipPath></defs>
+          <g clip-path="url(#meter-clip)">
+            <rect class="meter-bg" width="100" height="92"/>
+            <rect class="meter-fill" width="100" height="92"/>
+          </g>
+          <path class="meter-line" d="M50 88C14 62 4 44 4 28 4 14 15 4 27 4c9 0 18 5 23 14C55 9 64 4 73 4c12 0 23 10 23 24 0 16-10 34-46 60z"/>
+        </svg>
         <output class="pct" id="pct-value" for="pct-input">70% ♡</output>
         <input type="range" id="pct-input" name="pct" min="0" max="100" step="1" value="70">
         <p class="ends" aria-hidden="true"><span>just a little</span><span>SO MUCH!!</span></p>
@@ -148,14 +151,15 @@
       </form>
     </section>
 
-    <!-- 8. THE FINAL LETTER -->
     <section class="screen" id="letter" aria-labelledby="letter-title" hidden>
-      <figure class="mascot" data-prop="letter" data-mood="happy" data-blush="1"></figure>
+      <figure class="mascot" data-prop="heart" data-mood="happy" data-blush="1"></figure>
       <article class="card">
         <h1 id="letter-title" tabindex="-1">thank you, auyel! ♡</h1>
         <p class="sub" data-when="yes">you made someone very happy today.</p>
         <p class="sub" data-when="no" hidden>you made it to the end, and that already means a lot.</p>
 
+        <div class="envelope">
+          <span class="flap" aria-hidden="true"></span>
         <blockquote class="letter" data-when="yes">
           <p>thank you for liking nava. honestly, i'm really happy to know that you do.</p>
           <p>i'll do my best to make you feel appreciated, comfortable, and happy whenever we're together.</p>
@@ -169,18 +173,36 @@
           <p>no rush, no pressure. nava's still nava, and you're still you.</p>
           <footer class="sign">with love, nava :3</footer>
         </blockquote>
+        </div>
 
         <p class="sub">last step: nava can't see your answers until you send them to him.</p>
         <button class="btn" type="button" data-action="copy">copy my answers for nava ♡</button>
         <p class="hint" id="copy-status" role="status"></p>
         <textarea class="copybox" id="summary" aria-label="your answers" readonly hidden></textarea>
+        <button class="btn ghost" id="continue-btn" type="button" data-go="dance" hidden>continue ♡</button>
         <button class="link" type="button" data-action="restart">start over</button>
+      </article>
+    </section>
+
+    <section class="screen" id="dance" aria-labelledby="dance-title" hidden>
+      <div class="stage">
+        <figure class="mascot" data-prop="none" data-mood="happy" data-blush="1"><figcaption>nava</figcaption></figure>
+        <span class="beat" aria-hidden="true">♥</span>
+        <figure class="mascot pinky" data-prop="none" data-mood="happy" data-blush="1" data-bow><figcaption>auyel</figcaption></figure>
+      </div>
+      <article class="card">
+        <p class="eyebrow">psst, one more thing</p>
+        <h1 id="dance-title" tabindex="-1">this is us btw :3</h1>
+        <p class="sub">tap us!! ♡</p>
+        <div class="note">
+          <p>okay, that's really all. now go text nava, he's been waiting this whole time :p</p>
+        </div>
+        <button class="link" type="button" data-go="letter">← back to the letter</button>
       </article>
     </section>
 
   </main>
 
-  <!-- popup when she taps NO -->
   <dialog id="no-dialog" aria-labelledby="no-title">
     <figure class="mascot" data-prop="none" data-mood="shock" data-blush="0.2"></figure>
     <article class="card">
@@ -193,8 +215,17 @@
     </article>
   </dialog>
 
-  <!-- the mascot, drawn once and cloned into every <figure class="mascot"> by app.js.
-       data-mood / data-prop on the figure decide which eyes and prop are visible (see style.css). -->
+  <aside class="dock collapsed" id="dock" aria-label="music" hidden>
+    <div class="dock-embed" id="dock-embed"><div id="spotify-embed"></div></div>
+    <p class="dock-hint" id="dock-hint">nava picked a song for this. tap play ♡</p>
+    <div class="dock-bar">
+      <span class="eq" id="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <p class="dock-track"><strong>Glue Song</strong><span>beabadoobee</span></p>
+      <button class="dock-btn" id="dock-play" type="button" aria-label="play">▶</button>
+      <button class="dock-btn" id="dock-toggle" type="button" aria-expanded="false" aria-controls="dock-embed" aria-label="show or hide the spotify player">⌃</button>
+    </div>
+  </aside>
+
   <template id="mascot-template">
     <svg viewBox="0 0 200 200" role="img" aria-label="a little cream bunny">
       <g class="m-fill m-line">
@@ -207,6 +238,11 @@
       <g class="blush m-berry">
         <ellipse cx="62" cy="134" rx="12" ry="7"/>
         <ellipse cx="138" cy="134" rx="12" ry="7"/>
+      </g>
+
+      <g class="m-bow">
+        <path class="m-berry m-line" d="M100 80l-22-13v26zM100 80l22-13v26z"/>
+        <circle class="m-berry m-line" cx="100" cy="80" r="6.5"/>
       </g>
 
       <g data-eyes="normal" class="m-ink"><circle cx="80" cy="118" r="5.5"/><circle cx="120" cy="118" r="5.5"/></g>
