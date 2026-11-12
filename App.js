@@ -62,7 +62,7 @@
 
   const TRACK_ID = "3iBgrkexCzVuPy4O9vx7Mf";
   const dock = $("#dock"), eq = $("#eq"), playBtn = $("#dock-play"), dockToggle = $("#dock-toggle");
-  let spotify = null, dockStarted = false, everPlayed = false, loopPending = false;
+  let spotify = null, dockStarted = false, dockFresh = false, everPlayed = false, loopPending = false;
 
   function setDockOpen(open) {
     dock.classList.toggle("collapsed", !open);
@@ -97,9 +97,10 @@
       setTimeout(() => { loopPending = false; spotify?.restart?.(); }, 1200);
     }
   }
-  function introduceMusic() {
+  function introduceMusic(keepOpenOnce = false) {
     if (dockStarted) return;
     dockStarted = true;
+    dockFresh = keepOpenOnce;
     dock.hidden = false;
     document.body.classList.add("has-dock");
     setDockOpen(true);
@@ -165,6 +166,8 @@
       if (step === "letter") prepareLetter();
       if (step === "final") $("#final .mascot").dataset.mood = "normal";
       screens.forEach((s) => { s.hidden = s !== next; s.classList.remove("leaving"); });
+      if (dockFresh) dockFresh = false;
+      else if (dockStarted) setDockOpen(false);
       rain(step === "dance" || (step === "letter" && state.like === true), step === "dance" ? 320 : 900);
       const form = $("form", next);
       if (form) refreshButton(form);
@@ -318,7 +321,7 @@
     const btn = e.target.closest("button");
     if (!btn) return;
     if (btn.dataset.go) {
-      if (btn.dataset.go === "q1") introduceMusic();
+      if (btn.dataset.go === "q1") introduceMusic(true);
       show(btn.dataset.go);
     }
     else if (actions[btn.dataset.action]) actions[btn.dataset.action]();
